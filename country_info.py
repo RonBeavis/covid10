@@ -45,8 +45,11 @@ mpl.style.use('seaborn-notebook')
 ax = plt.gca()
 plt.yscale('log')
 plt.ylabel(ytitle)
-plt.xlabel('date')
-plt.title('%s' % (ytitle))
+xtitle = 'days after 10th death'
+if ytitle == 'confirmed cases':
+	xtitle = 'days after 100th case'
+plt.xlabel(xtitle)
+plt.title('COVID19 %s (Johns Hopkins CSSE data)' % (ytitle))
 ax.legend(loc='upper left', bbox_to_anchor=(1, 1))
 
 for c in country:
@@ -67,7 +70,7 @@ for c in country:
 			x += 1
 			yv.append(y) 
 	plt.text(len(xv)-1+.2,yv[-1],c)
-	plt.plot(xv,yv,label='%s' % (c))
+	plt.plot(xv,yv,marker='o',label='%s' % (c))
 plt.legend(loc='best')
 plt.grid(True, lw = 1, ls = '--', c = '.8')
 
