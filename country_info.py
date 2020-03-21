@@ -10,23 +10,28 @@ import datetime
 import csv
 
 args = sys.argv;
-path = 'covid-19_deaths.csv'
-ytitle = 'fatalities'
-clist = ['US','Korea, South','Canada','Italy','Spain','France','UK','Singapore','Japan','United Kingdom']
-if args[1] == 'deaths':
-	path = 'covid-19_deaths.csv'
-	ytitle = 'fatalities'
-	args.pop(1)
-elif args[1] == 'confirmed':
+path = 'covid-19_confirmed.csv'
+ytitle = 'confirmed cases'
+clist = ['US','Korea, South','Canada','Italy','Spain','France','UK','Singapore','Japan','United Kingdom','Iran']
+try:
+	if args[1] == 'deaths':
+		path = 'covid-19_deaths.csv'
+		ytitle = 'fatalities'
+		args.pop(1)
+	elif args[1] == 'confirmed':
+		path = 'covid-19_confirmed.csv'
+		ytitle = 'confirmed cases'
+		args.pop(1)
+except:
 	path = 'covid-19_confirmed.csv'
 	ytitle = 'confirmed cases'
-	args.pop(1)
+
 lines = []
-print(args)
 with open(path) as csvfile:
 	readCSV = csv.reader(csvfile, delimiter=',')
 	for r in readCSV:
-		lines.append(r)
+		if len(r) > 0:
+			lines.append(r)
 
 titles = lines[0]
 lines = lines[1:]
@@ -39,7 +44,10 @@ for l in lines:
 	if c in country:
 		ts = l[4:]
 		for i,t in enumerate(ts):
-			country[c][i] += int(t)
+			try:
+				country[c][i] += int(t)
+			except:
+				pass
 #	plt.yscale('log')
 mpl.style.use('seaborn-notebook')
 ax = plt.gca()
@@ -49,7 +57,7 @@ xtitle = 'days after 10th death'
 if ytitle == 'confirmed cases':
 	xtitle = 'days after 100th case'
 plt.xlabel(xtitle)
-plt.title('COVID19 %s (Johns Hopkins CSSE data)' % (ytitle))
+plt.title('COVID-19 %s (Johns Hopkins CSSE data)' % (ytitle))
 ax.legend(loc='upper left', bbox_to_anchor=(1, 1))
 
 for c in country:
@@ -69,6 +77,8 @@ for c in country:
 			xv.append(x)
 			x += 1
 			yv.append(y) 
+	if len(xv) < 2:
+		continue
 	plt.text(len(xv)-1+.2,yv[-1],c)
 	plt.plot(xv,yv,marker='o',label='%s' % (c))
 plt.legend(loc='best')

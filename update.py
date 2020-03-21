@@ -8,6 +8,10 @@ try:
 	print(len(r.text))
 	f.write(r.text)
 	f.close()
+	lines = [l for l in open('covid-19_confirmed.csv') if len(l) > 10]
+	f = open('covid-19_confirmed.csv','w')
+	f.write(''.join(lines))
+	f.close()
 except requests.exceptions.RequestException as e:
 	print(e)
 
@@ -19,6 +23,10 @@ try:
 	f = open('covid-19_deaths.csv','w')
 	print(len(r.text))
 	f.write(r.text)
+	f.close()
+	lines = [l for l in open('covid-19_deaths.csv') if len(l) > 10]
+	f = open('covid-19_deaths.csv','w')
+	f.write(''.join(lines))
 	f.close()
 except requests.exceptions.RequestException as e:
 	print(e)
