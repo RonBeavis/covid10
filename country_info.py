@@ -8,11 +8,17 @@ import matplotlib.style
 import matplotlib as mpl
 import datetime
 import csv
-
+	
 args = sys.argv;
 path = 'covid-19_confirmed.csv'
 ytitle = 'confirmed cases'
-clist = ['US','Korea, South','Canada','Italy','Spain','France','UK','Singapore','Japan','United Kingdom','Iran']
+type = 'log'
+clist = ['Sweden','Switzerland','US','Korea, South','Italy','Spain','France','United Kingdom']
+#clist = ['Sweden','Denmark','Canada','Norway']
+try:
+	type = args[2]
+except:
+	type = 'log'
 try:
 	if args[1] == 'deaths':
 		path = 'covid-19_deaths.csv'
@@ -48,10 +54,10 @@ for l in lines:
 				country[c][i] += int(t)
 			except:
 				pass
-#	plt.yscale('log')
+plt.yscale('log')
 mpl.style.use('seaborn-notebook')
 ax = plt.gca()
-plt.yscale('log')
+plt.yscale(type)
 plt.ylabel(ytitle)
 xtitle = 'days after 10th death'
 if ytitle == 'confirmed cases':
@@ -68,6 +74,7 @@ for c in country:
 		min = 100
 	xv = []
 	yv = []
+	dyv = []
 	x = 0
 	ok = False
 	for y in country[c]:
@@ -76,13 +83,15 @@ for c in country:
 		if ok:
 			xv.append(x)
 			x += 1
-			yv.append(y) 
+			yv.append(y)
+			dyv.append(y-country[c][i-1]) 
 	if len(xv) < 2:
 		continue
 	plt.text(len(xv)-1+.2,yv[-1],c)
 	plt.plot(xv,yv,marker='o',label='%s' % (c))
 plt.legend(loc='best')
 plt.grid(True, lw = 1, ls = '--', c = '.8')
-
+fig = matplotlib.pyplot.gcf()
+fig.set_size_inches(10,5)
 plt.show()
 
