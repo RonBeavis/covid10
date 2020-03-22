@@ -67,17 +67,19 @@ us_states = {
     'Wyoming': 'WY',
 }
 
-def plot_model(_plt,_max,_per,_color):
+def plot_model(_plt,_max,_per,_color,_yt):
 	xv = []
 	yv = []
 	y = 100
+	if _yt == 'fatalities':
+		y = 10
 	for x in range(0,max):
 		xv.append(x)
 		yv.append(y)
 		y = y * (1.0 + _per/100.0)
 		if y > ymax:
 			break
-	_plt.plot(xv,yv,marker='x',linestyle='--',color=_color,label='+%i%% /day' % (_per))
+	_plt.plot(xv,yv,marker='x',linestyle='--',alpha=0.8,color=_color,label='+%i%% /day' % (_per))
 	_plt.text(len(xv)-1+.2,yv[-1],'%i%%' % (_per),color=_color)
 
 args = sys.argv;
@@ -183,9 +185,9 @@ for s,v in sorted(state.items(),key=lambda value: value[1][-1],reverse = True):
 	plt.plot(xv,yv,marker='o',label='%s' % (sl))
 #show the graph
 
-plot_model(plt,max,10,'#55ff55')
-plot_model(plt,max,30,'#aaaaaa')
-plot_model(plt,max,50,'#ffaaaa')
+plot_model(plt,max,10,'#55ff55',ytitle)
+plot_model(plt,max,30,'#aaaaaa',ytitle)
+plot_model(plt,max,50,'#ffaaaa',ytitle)
 
 
 plt.grid(True, lw = 1, ls = ':', c = '.8')
@@ -195,5 +197,5 @@ plt.legend(loc='best')
 box = ax.get_position()
 ax.set_position([box.x0, box.y0, box.width * 0.8, box.height])
 ax.legend(loc='upper left', bbox_to_anchor=(1.1, 1))
-fig.savefig('D:\somecrazyblogger-org/covid19/%s' % (output), dpi=100, bbox_inches='tight')
+fig.savefig('%s' % (output), dpi=100, bbox_inches='tight')
 
