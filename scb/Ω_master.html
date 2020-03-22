@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<HTML>
+<HEAD>
+<META HTTP-EQUIV="CONTENT-TYPE" CONTENT="text/html; charset=utf8" />
+<meta http-equiv="x-ua-compatible" content="ie=edge">
+<meta http-equiv="Cache-control: no-cache" content="public">
+<meta http-equiv="Pragma: no-cache" content="public">
+<meta name="keywords" content="Beavis Informatics Ltd." />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+
+<title>World War C trends</title>
+<link rel="shortcut icon" href="/p/scb_16.ico">
+<link rel="apple-touch-icon" sizes="180x180" href="/p/scb_180.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/p/scb_32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/p/scb_16.png">
+<link rel="stylesheet" href="/css/scb.css">
+
+<style media="screen" type="text/css">
+div.ex2 {
+  max-width: 500px;
+  padding: 6pt 6pt 6pt 6pt;
+}
+div.btn1 {
+  max-width: 500px;
+  display: flex
+}
+div.ex4 {
+  max-width: 600px;
+  margin: 10px 20px 3px 3px;
+  background-color: #FFFFFF;
+  padding: 6pt 6pt 6pt 6pt;
+}
+
+div.ex3 {
+  max-width: 500px;
+  font-style: italic;
+  margin: 10px 10px 10px 3px;
+  background-color: #DDDDDD;
+}
+.linkBar {
+	font-size: 11pt;
+	color: rgb(102,102,102);
+	position: fixed;
+	z-index: 100;
+	text-align: center;
+	top: 0px;
+	left: 0px;
+	margin: 0px;
+	width: 100%;
+	height: 24px;
+	line-height: 24px;
+	padding-top: 0px;
+	background: none repeat scroll 0% 0% rgb(0, 0,150);
+	border-top: 1px solid rgb(50,0,0);
+	box-shadow: 0px 0px 10px rgb(0, 0, 0, 0.5);
+}
+.linkBar a {color: white;font-family: Roboto,Arial, Helvetica, sans-serif;text-decoration: none;font-size: 11pt;}
+.linkBar a:hover {color: white;font-family: Roboto,Arial, Helvetica, sans-serif;text-decoration: underline;font-size: 11pt;}
+.linkBar a:visited {color: white;font-family: Roboto,Arial, Helvetica, sans-serif;text-decoration: none;font-size: 11pt;}
+.linkBar a:active {color: white;font-family: Roboto,Arial, Helvetica, sans-serif;text-decoration: none;font-size: 11pt;}
+a {
+  color: blue;
+  text-decoration: none;
+}
+a:hover {
+  color: blue;
+  text-decoration: underline;
+}
+</style>
+<script type="text/javascript">
+function copyText()	{
+	var cText = document.getElementById("zero");
+	var sValue = cText.value;
+	cText.value = sValue.replace(/\./g,'.&#8203;');
+	cText.value = sValue.replace(/\./g,'.'+String.fromCharCode(8203));
+	cText.select();
+	document.execCommand("copy");
+	cText.value="";
+	cText.value = sValue;
+}
+function countText(_txt)	{
+	var lText = _txt.value.replace(/\./g,'.'+String.fromCharCode(8203));
+	document.getElementById("cnt").innerHTML = lText.length + "/280";
+}
+
+</script>
+</HEAD>
+<BODY onLoad="">
+<div class="linkBar" style="color: white">&nbsp;|&nbsp;<a href="#general">Industrial</a>&nbsp;|&nbsp;<a href="#nordic">Nordic/Polar</a>&nbsp;|&nbsp;<a href="#us">US States</a>&nbsp;|&nbsp;<a href="#asia">Asian</a>&nbsp;|&nbsp;<a href="#latin">Latin America</a>&nbsp;|&nbsp;<a href="#data">Data</a>&nbsp;|&nbsp;<a href="#notes">Notes</a>&nbsp;|&nbsp;</div>
+<br />
+<a name="general" >&nbsp;</a>
+<h3>Selected Industrialized Countries ( ), updates hourly</h3>
+<img src="/covid19/general.png">
+<img src="/covid19/general_linear.png">
+<a name="nordic" >&nbsp;</a>
+<h3>Polar/Nordic Grouping ( ), updates hourly</h3>
+<img src="/covid19/northern.png">
+<img src="/covid19/northern_linear.png">
+<a name="us" >&nbsp;</a>
+<h3>15 Most Affected US States ( ), updates hourly</h3>
+<img src="/covid19/us.png">
+<img src="/covid19/us_linear.png">
+<a name="asia" >&nbsp;</a>
+<h3>Selected Asian Countries ( ), updates hourly</h3>
+<img src="/covid19/asia.png">
+<img src="/covid19/asia_linear.png">
+<a name="latin" >&nbsp;</a>
+<h3>Selected Latin America Countries ( ), updates hourly</h3>
+<img src="/covid19/latin.png">
+<img src="/covid19/latin_linear.png">
+<a name="data" >&nbsp;</a>
+<h3>Johns Hopkins data ( )</h3>
+<ol>
+<li>COVID-19 attributed deaths [<a href="/covid19/covid-19_deaths.csv" title="complete CSV file">CSV</a>]</li>
+<li>COVID-19 confirmed cases [<a href="/covid19/covid-19_confirmed.csv" title="complete CSV file">CSV</a>]</li>
+<li>CSSEGISandData host site [<a href="https://github.com/CSSEGISandData/COVID-19" target="JH">github</a>]</li>
+</ol>
+<a name="notes" >&nbsp;</a>
+<h3>Notes</h3>
+<ol>
+<li>This page updates hourly, but Johns Hopkins data may update at irregular intervals.</li>
+<li>The Johns Hopkins data does not tabulate data from today (UTC): today's data will start to be added as 1:05 UTC tomorrow.</li>
+<li>The dashed lines indicate the following functions:
+<ul>
+<li>red: y(day+1) = y(day) &times; 1.5, y(0) = 100</li>
+<li>gray: y(day+1) = y(day) &times; 1.3, y(0) = 100</li>
+<li>green: y(day+1) = y(day) &times; 1.1, y(0) = 100</li>
+</ul>
+</li>
+</ol>
+</BODY>
+</HTML>
