@@ -3,7 +3,7 @@ import re
 
 lines = [l for l in open('Ω_master.html','r')]
 now = datetime.datetime.now()
-tm = '(%s UTC)' % (now.strftime("%Y-%m-%d %H:%M:%S"))
+tm = '(%s UTC)' % (now.strftime("%Y-%m-%d %H:%M"))
 f = open('Ω.html','w')
 for l in lines:
 	o = l

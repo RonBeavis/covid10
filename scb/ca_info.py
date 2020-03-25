@@ -9,10 +9,26 @@ import matplotlib as mpl
 import datetime
 import csv
 
+ca_states = {
+    'British Columbia': 'BC',
+    'Alberta': 'AB',
+    'Saskatchewan': 'SK',
+    'Manitoba': 'MB',
+    'Ontario': 'ON',
+    'Quebec': 'QC',
+    'New Brunswick': 'NB',
+    'Nova Scotia': 'NS',
+    'Newfoundland and Labrador': 'NL',
+	'Prince Edward Island': 'PE',
+	'Yukon': 'YT',
+	'Nunavut': 'NU',
+	'Northwest Territories': 'NT'
+}
+
 def plot_model(_plt,_max,_per,_color,_yt):
 	xv = []
 	yv = []
-	y = 100
+	y = 10
 	if _yt == 'fatalities':
 		y = 10
 	for x in range(0,max):
@@ -30,15 +46,7 @@ ytitle = 'confirmed cases'
 type = 'log'
 output = args[3]
 # specify list of countries to track
-clist = ['Sweden','Switzerland','US','Korea, South','Italy','Spain','France','United Kingdom','Germany','Belgium','Austria']
-if output == 'northern.png' or output == 'northern_linear.png':
-	clist = ['Sweden','Denmark','Canada','Norway','Russia','Finland','Netherlands','Australia','Iceland','New Zealand']
-elif output == 'latin.png' or output == 'latin_linear.png':
-	clist = ['Mexico','Brazil','Chile','Argentina','Columbia','Peru','Bolivia','Ecuador','Cuba','Panama','Nicaragua','Uruguay']
-elif output == 'africa.png' or output == 'africa_linear.png':
-	clist = ['Qatar','Saudi Arabia','Egypt','South Africa','Israel','Bahrain','Algeria','United Arab Emirates','Morocco','Jordan','Lebanon','Kenya','Ethiopia']
 # if the 2nd command line argument is 'linear' or 'log', use that to set y-axis type
-clabels = {'Korea, South':'S. Korea','Taiwan*':'Taiwan','Netherlands':'Holland','United Kingdom':'UK','United Arab Emirates':'UAE'}
 try:
 	type = args[2]
 except:
@@ -69,17 +77,20 @@ titles = lines[0]
 lines = lines[1:]
 #create an x-axis list, converting the dates in the first line into datetime objects
 xs = [datetime.datetime.strptime(d,"%m/%d/%y").date() for d in titles[4:]]
-country = {}
+
+state = {}
 #parse lines into a dict of country totals
 for l in lines:
-	c = l[1]
-	if c not in country:
-		country[c] = [0]*len(xs)
-	if c in country:
+	if l[1] != 'Canada':
+		continue
+	s = l[0]
+	if s not in state:
+		state[s] = [0]*len(xs)
+	if s in state:
 		ts = l[4:]
 		for i,t in enumerate(ts):
 			try:
-				country[c][i] += int(t)
+				state[s][i] += int(t)
 			except:
 				pass
 mpl.style.use('seaborn-notebook')
@@ -89,27 +100,29 @@ plt.ylabel('%s (%s)' % (ytitle,type))
 #set titles based on the csv used
 xtitle = 'days after 10th death'
 if ytitle == 'confirmed cases':
-	xtitle = 'days after 100th case'
+	xtitle = 'days after 10th case'
 plt.xlabel(xtitle)
 now = datetime.datetime.now()
 tm = '%s UTC' % (xs[-1].strftime("%Y-%m-%d"))
 plt.title('COVID-19 %s (JHU CSSE data) %s' % (ytitle,tm))
-ax.legend(loc='upper left', bbox_to_anchor=(1, 1))
 #go through the selected country data and organize into plotted graphs
+limit = 14
+i = 0
 max = 0
 ymax = 0
-for c,v in sorted(country.items(),key=lambda value: value[1][-1],reverse = True):
-	if c not in clist:
-		continue
+for s,v in sorted(state.items(),key=lambda value: value[1][-1],reverse = True):
 	min = 10
 	if ytitle == 'confirmed cases':
-		min = 100
+		min = 10
+	if i > limit:
+		continue
+	i += 1
 	xv = []
 	yv = []
 	dyv = []
 	x = 0
 	ok = False
-	for y in country[c]:
+	for y in state[s]:
 		if not ok and y >= min:
 			ok = True
 		if ok:
@@ -118,19 +131,19 @@ for c,v in sorted(country.items(),key=lambda value: value[1][-1],reverse = True)
 			yv.append(y)
 	if len(xv) < 2:
 		continue
-	if len(xv) > max:
-		max = len(xv)
 	if yv[-1] > ymax:
 		ymax = yv[-1]
-	if c in clabels:
-		cl = clabels[c]
+	if len(xv) > max:
+		max = len(xv)
+	if s in ca_states:
+		sl = ca_states[s]
 	else:
-		cl = c
+		continue
 	px = [xv[-1],xv[-1]+1]
 	dy = 1.0 + float(yv[-1]-yv[-2])/float(yv[-1])
 	py = [yv[-1],yv[-1]*dy]
-	plt.plot(xv,yv,marker='o',label='%s' % (cl))
-	plt.text(px[-1]+.2,py[-1],cl)
+	plt.plot(xv,yv,marker='o',label='%s' % (sl))
+	plt.text(px[-1]+.2,py[-1],sl)
 	plt.plot(px,py,marker='x',linestyle=':',alpha=1,color='#999999')
 #show the graph
 
@@ -139,10 +152,11 @@ plot_model(plt,max,20,'#aaddaa',ytitle)
 plot_model(plt,max,30,'#aaaaaa',ytitle)
 plot_model(plt,max,50,'#ffaaaa',ytitle)
 
-plt.legend(loc='best')
+
 plt.grid(True, lw = 1, ls = ':', c = '.8')
 fig = matplotlib.pyplot.gcf()
 fig.set_size_inches(10,5)
+plt.legend(loc='best')
 box = ax.get_position()
 ax.set_position([box.x0, box.y0, box.width * 0.8, box.height])
 ax.legend(loc='upper left', bbox_to_anchor=(1.1, 1))

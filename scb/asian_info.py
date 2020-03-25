@@ -9,17 +9,19 @@ import matplotlib as mpl
 import datetime
 import csv
 
-def plot_model(_plt,_max,_per,_color):
+def plot_model(_plt,_max,_per,_color,_yt):
 	xv = []
 	yv = []
 	y = 100
+	if _yt == 'fatalities':
+		y = 10
 	for x in range(0,max):
 		xv.append(x)
 		yv.append(y)
 		y = y * (1.0 + _per/100.0)
 		if y > ymax:
 			break
-	_plt.plot(xv,yv,marker='x',linestyle='--',color=_color,label='+%i%% /day' % (_per))
+	_plt.plot(xv,yv,marker='x',linestyle='--',alpha=0.8,color=_color,label='+%i%% /day' % (_per))
 	_plt.text(len(xv)-1+.2,yv[-1],'%i%%' % (_per),color=_color)
 
 args = sys.argv;
@@ -28,7 +30,7 @@ ytitle = 'confirmed cases'
 type = 'log'
 output = args[3]
 # specify list of countries to track
-clist = ['Taiwan*','China','Japan','Korea, South','Singapore','Qatar','India','Pakistan','Saudi Arabia','Iran']
+clist = ['Indonesia','Thailand','Philippines','Taiwan*','China','Japan','Korea, South','Singapore','India','Pakistan','Iran','Malaysia']
 clabels = {'Korea, South':'S. Korea','Taiwan*':'Taiwan'}
 # if the 2nd command line argument is 'linear' or 'log', use that to set y-axis type
 try:
@@ -121,17 +123,30 @@ for c,v in sorted(country.items(),key=lambda value: value[1][-1],reverse = True)
 	else:
 		cl = c
 	if c == 'China':
-		plt.text(len(xv)-1+.2,yv[-1],'Hong Kong')
+		px = [xv[-1],xv[-1]+1]
+		dy = 1.0 + float(yv[-1]-yv[-2])/float(yv[-1])
+		py = [yv[-1],yv[-1]*dy]
 		plt.plot(xv,yv,marker='o',label='%s' % ('Hong Kong'))
+		plt.text(px[-1]+.2,py[-1],'Hong Kong')
+		plt.plot(px,py,marker='x',linestyle=':',alpha=1,color='#999999')
+
+
+#		plt.text(len(xv)-1+.2,yv[-1],'Hong Kong')
+#		plt.plot(xv,yv,marker='o',label='%s' % ('Hong Kong'))
 	else:
-		plt.text(len(xv)-1+.2,yv[-1],cl)
+		px = [xv[-1],xv[-1]+1]
+		dy = 1.0 + float(yv[-1]-yv[-2])/float(yv[-1])
+		py = [yv[-1],yv[-1]*dy]
 		plt.plot(xv,yv,marker='o',label='%s' % (cl))
+		plt.text(px[-1]+.2,py[-1],cl)
+		plt.plot(px,py,marker='x',linestyle=':',alpha=1,color='#999999')
 	
 #show the graph
 
-plot_model(plt,max,10,'#55ff55')
-plot_model(plt,max,30,'#aaaaaa')
-plot_model(plt,max,50,'#ffaaaa')
+plot_model(plt,max,10,'#55ff55',ytitle)
+plot_model(plt,max,20,'#aaddaa',ytitle)
+plot_model(plt,max,30,'#aaaaaa',ytitle)
+plot_model(plt,max,50,'#ffaaaa',ytitle)
 
 plt.grid(True, lw = 1, ls = ':', c = '.8')
 plt.legend(loc='best')
@@ -140,5 +155,5 @@ fig.set_size_inches(10,5)
 box = ax.get_position()
 ax.set_position([box.x0, box.y0, box.width * 0.8, box.height])
 ax.legend(loc='upper left', bbox_to_anchor=(1.1, 1))
-fig.savefig('D:\somecrazyblogger-org/covid19/%s' % (output), dpi=100, bbox_inches='tight')
+fig.savefig('%s' % (output), dpi=100, bbox_inches='tight')
 

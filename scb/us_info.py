@@ -96,11 +96,11 @@ except:
 # select either confirmed cases or deaths for graph, from the 1st command line argument
 try:
 	if args[1] == 'deaths':
-		path = 'covid-19_deaths.csv'
+		path = 'covid-19_deaths_us.csv'
 		ytitle = 'fatalities'
 		args.pop(1)
 	elif args[1] == 'confirmed':
-		path = 'covid-19_confirmed.csv'
+		path = 'covid-19_confirmed_us.csv'
 		ytitle = 'confirmed cases'
 		args.pop(1)
 except:
@@ -181,8 +181,13 @@ for s,v in sorted(state.items(),key=lambda value: value[1][-1],reverse = True):
 		sl = us_states[s]
 	else:
 		sl = s
-	plt.text(len(xv)-1+.2,yv[-1],sl)
+	px = [xv[-1],xv[-1]+1]
+	dy = 1.0 + float(yv[-1]-yv[-2])/float(yv[-1])
+	py = [yv[-1],yv[-1]*dy]
 	plt.plot(xv,yv,marker='o',label='%s' % (sl))
+	plt.text(px[-1]+.2,py[-1],sl)
+	plt.plot(px,py,marker='x',linestyle=':',alpha=1,color='#999999')
+
 #show the graph
 
 plot_model(plt,max,10,'#55ff55',ytitle)
