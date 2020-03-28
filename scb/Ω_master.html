@@ -87,54 +87,78 @@ function countText(_txt)	{
 </HEAD>
 <BODY onLoad="">
 <div class="linkBar" style="color: white">&nbsp;|&nbsp;
-<a href="#general">Industrial</a>&nbsp;|&nbsp;
+<a href="#global">Global</a>&nbsp;|&nbsp;
+<a href="#general">EU+</a>&nbsp;|&nbsp;
 <a href="#nordic">Nordic/Polar</a>&nbsp;|&nbsp;
-<a href="#us">US States</a>&nbsp;|&nbsp;
+<a href="#us">USA</a>&nbsp;|&nbsp;
+<a href="#ca">Canada</a>&nbsp;|&nbsp;
 <a href="#asia">Asian</a>&nbsp;|&nbsp;
 <a href="#latin">Latin America</a>&nbsp;|&nbsp;
+<a href="#africa">Africa/ME</a>&nbsp;|&nbsp;
 <a href="#data">Data</a>&nbsp;|&nbsp;
 <a href="#notes">Notes</a>&nbsp;|&nbsp;
 <a href="/covid19d/Ω.html">Deaths</a>&nbsp;|&nbsp;</div>
 <br />
 
-<h3><a name="general" >&nbsp;</a>Selected Industrialized Countries ( ), updates hourly</h3>
+<h3><a name="global" >&nbsp;</a>Global ( ), updates daily</h3>
+<img src="/covid19/global.png">
+<img src="/covid19/global_linear.png">
+
+<h3><a name="general" >&nbsp;</a>Selected Industrial Countries ( ), updates daily</h3>
 <img src="/covid19/general.png">
 <img src="/covid19/general_linear.png">
 
-<h3><a name="nordic" >&nbsp;</a>Polar/Nordic Grouping ( ), updates hourly</h3>
+<h3><a name="nordic" >&nbsp;</a>Polar/Nordic Grouping ( ), updates daily</h3>
 <img src="/covid19/northern.png">
 <img src="/covid19/northern_linear.png">
-<h3><a name="us" >&nbsp;</a>15 Most Affected US States ( ), updates hourly</h3>
+
+<h3><a name="us" >&nbsp;</a>15 Most Affected US States ( ), updates daily</h3>
 <img src="/covid19/us.png">
 <img src="/covid19/us_linear.png">
 
-<h3><a name="asia" >&nbsp;</a>Selected Asian Countries ( ), updates hourly</h3>
+<h3><a name="ca" >&nbsp;</a>Canadian Provinces ( ), updates daily</h3>
+<img src="/covid19/ca.png">
+<img src="/covid19/ca_linear.png">
+
+<h3><a name="asia" >&nbsp;</a>Selected Asian Countries ( ), updates daily</h3>
 <img src="/covid19/asia.png">
 <img src="/covid19/asia_linear.png">
 
-<h3><a name="latin" >&nbsp;</a>Selected Latin America Countries ( ), updates hourly</h3>
+<h3><a name="latin" >&nbsp;</a>Selected Latin America Countries ( ), updates daily</h3>
 <img src="/covid19/latin.png">
 <img src="/covid19/latin_linear.png">
 
-<h3><a name="data" >&nbsp;</a>Johns Hopkins data ( )</h3>
+<h3><a name="africa" >&nbsp;</a>Selected African/Middle East Countries ( ), updates daily</h3>
+<img src="/covid19/africa.png">
+<img src="/covid19/africa_linear.png">
+
+<h3><a name="data" >&nbsp;</a>Johns Hopkins data (2020-03-25 00:07 UTC)</h3>
 <ol>
 <li>COVID-19 attributed deaths [<a href="/covid19/covid-19_deaths.csv" title="complete CSV file">CSV</a>]</li>
 <li>COVID-19 confirmed cases [<a href="/covid19/covid-19_confirmed.csv" title="complete CSV file">CSV</a>]</li>
+<li>COVID-19 attributed deaths (US States) [<a href="/covid19/covid-19_deaths_us.csv" title="complete CSV file">CSV</a>]</li>
+<li>COVID-19 confirmed cases (US States) [<a href="/covid19/covid-19_confirmed_us.csv" title="complete CSV file">CSV</a>]</li>
 <li>CSSEGISandData host site [<a href="https://github.com/CSSEGISandData/COVID-19" target="_github">github</a>]</li>
 </ol>
 
 <h3><a name="notes" >&nbsp;</a>Notes</h3>
 <ol>
-<li>This page updates hourly, but Johns Hopkins data may update at irregular intervals.</li>
-<li>The Johns Hopkins data does not tabulate data from today (UTC): today's data will start to be added as 1:05 UTC tomorrow.</li>
-<li>The dashed lines indicate the following functions:
+<li>This page updates daily, within 1 hour of 0:00 UTC.</li>
+<li>The Johns Hopkins data does not tabulate data from today (UTC): today's data will be added at midnight UTC.</li>
+<li>The Johns Hopkins data is provided to them by regional and national governments and may not be accurate or up-to-date. Use
+this information cautiously.</li>
+<li>Colored dashed lines represent recursive functions where y(0) = 100 (CA Provinces, y(0) = 10):
 <ul>
-<li style="color: red">y(day+1) = y(day) &times; 1.5, y(0) = 100</li>
-<li style="color: gray">y(day+1) = y(day) &times; 1.3, y(0) = 100</li>
-<li style="color: green">y(day+1) = y(day) &times; 1.1, y(0) = 100</li>
+<li style="color: #faaaaa">50%: y(day+1) = y(day) &times; 1.5;</li>
+<li style="color: #aaaaaa">30%: y(day+1) = y(day) &times; 1.3;</li>
+<li style="color: #aaddaa">20%: y(day+1) = y(day) &times; 1.2; &amp;</li>
+<li style="color: #55ff55">10%: y(day+1) = y(day) &times; 1.1.</li>
 </ul>
 </li>
-<li>The code for generating this page is available at <a href="https://github.com/RonBeavis/covid10/tree/master/scb" target="_github">github</a>.</li>
+<li>The code for generating this page is available at 
+<a href="https://github.com/RonBeavis/covid10/tree/master/scb" target="_github">github</a> and
+<a href="https://gitlab.com/norsivaeb/covid10" target="_github">gitlab</a>
+</li>
 </ol>
 </BODY>
 </HTML>
