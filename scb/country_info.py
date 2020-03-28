@@ -30,13 +30,22 @@ ytitle = 'confirmed cases'
 type = 'log'
 output = args[3]
 # specify list of countries to track
+eulist = ['Sweden','Switzerland','Italy','Spain','France','United Kingdom',
+		'Germany','Belgium','Austria','Poland','Netherlands','Portugal','Norway',
+		'Cyprus','Croatia','Bulgaria','Ireland','Greece','Denmark','Hungary',
+		'Latvia', 'Lithuania', 'Luxembourg', 'Malta','Romania', 'Slovakia', 'Slovenia']
+nalist = ['US','EU','Canada','Mexico']
+melist = ['Qatar','Saudi Arabia','Egypt','Israel','Bahrain','United Arab Emirates','Morocco','Jordan','Lebanon','Iran','Afganistan','Turkey']
 clist = ['Sweden','Switzerland','US','Korea, South','Italy','Spain','France','United Kingdom','Germany','Belgium','Austria']
 if output == 'northern.png' or output == 'northern_linear.png':
 	clist = ['Sweden','Denmark','Canada','Norway','Russia','Finland','Netherlands','Australia','Iceland','New Zealand']
 elif output == 'latin.png' or output == 'latin_linear.png':
-	clist = ['Mexico','Brazil','Chile','Argentina','Columbia','Peru','Bolivia','Ecuador','Cuba','Panama','Nicaragua','Uruguay']
+	clist = ['Mexico','Brazil','Chile','Argentina','Columbia','Peru','Bolivia','Ecuador','Cuba','Panama','Nicaragua','Uruguay','Guatemala','Belize','Jamaica']
 elif output == 'africa.png' or output == 'africa_linear.png':
 	clist = ['Qatar','Saudi Arabia','Egypt','South Africa','Israel','Bahrain','Algeria','United Arab Emirates','Morocco','Jordan','Lebanon','Kenya','Ethiopia']
+elif output == 'global.png' or output == 'global_linear.png':
+	clist = ['Earth','EU','China','N. America','Middle East','ROE']
+
 # if the 2nd command line argument is 'linear' or 'log', use that to set y-axis type
 clabels = {'Korea, South':'S. Korea','Taiwan*':'Taiwan','Netherlands':'Holland','United Kingdom':'UK','United Arab Emirates':'UAE'}
 try:
@@ -71,6 +80,22 @@ lines = lines[1:]
 xs = [datetime.datetime.strptime(d,"%m/%d/%y").date() for d in titles[4:]]
 country = {}
 #parse lines into a dict of country totals
+if 'EU' in clist:
+	country['EU'] = [0]*len(xs)
+else:
+	eulist = []
+if 'N. America' in clist:
+	country['N. America'] = [0]*len(xs)
+else:
+	nalist = []
+if 'Earth' in clist:
+	country['Earth'] = [0]*len(xs)
+	country['ROE'] = [0]*len(xs)
+if 'Middle East' in clist:
+	country['Middle East'] = [0]*len(xs)
+else:
+	melist = []
+
 for l in lines:
 	c = l[1]
 	if c not in country:
@@ -82,6 +107,43 @@ for l in lines:
 				country[c][i] += int(t)
 			except:
 				pass
+	if 'Earth' not in clist:
+		continue
+	if c in eulist:
+		ts = l[4:]
+		for i,t in enumerate(ts):
+			try:
+				country['EU'][i] += int(t)
+			except:
+				pass
+	elif c in nalist:
+		ts = l[4:]
+		for i,t in enumerate(ts):
+			try:
+				country['N. America'][i] += int(t)
+			except:
+				pass
+	elif c in melist:
+		ts = l[4:]
+		for i,t in enumerate(ts):
+			try:
+				country['Middle East'][i] += int(t)
+			except:
+				pass
+	elif c != 'China':
+		ts = l[4:]
+		for i,t in enumerate(ts):
+			try:
+				country['ROE'][i] += int(t)
+			except:
+				pass
+	ts = l[4:]
+	for i,t in enumerate(ts):
+		try:
+			country['Earth'][i] += int(t)
+		except:
+			pass
+
 mpl.style.use('seaborn-notebook')
 ax = plt.gca()
 plt.yscale(type)
@@ -129,7 +191,10 @@ for c,v in sorted(country.items(),key=lambda value: value[1][-1],reverse = True)
 	px = [xv[-1],xv[-1]+1]
 	dy = 1.0 + float(yv[-1]-yv[-2])/float(yv[-1])
 	py = [yv[-1],yv[-1]*dy]
-	plt.plot(xv,yv,marker='o',label='%s' % (cl))
+	if output.find('global') == 0:
+		plt.plot(xv,yv,marker='.',label='%s' % (cl))
+	else:
+		plt.plot(xv,yv,marker='o',label='%s' % (cl))
 	plt.text(px[-1]+.2,py[-1],cl)
 	plt.plot(px,py,marker='x',linestyle=':',alpha=1,color='#999999')
 #show the graph
