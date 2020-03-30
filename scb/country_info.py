@@ -37,13 +37,13 @@ eulist = ['Sweden','Switzerland','Italy','Spain','France','United Kingdom',
 nalist = ['US','EU','Canada','Mexico']
 melist = ['Qatar','Saudi Arabia','Egypt','Israel','Bahrain','United Arab Emirates','Morocco','Jordan','Lebanon','Iran','Afganistan','Turkey']
 clist = ['Sweden','Switzerland','US','Korea, South','Italy','Spain','France','United Kingdom','Germany','Belgium','Austria']
-if output == 'northern.png' or output == 'northern_linear.png':
+if output.find('northern') == 0:
 	clist = ['Sweden','Denmark','Canada','Norway','Russia','Finland','Netherlands','Australia','Iceland','New Zealand']
-elif output == 'latin.png' or output == 'latin_linear.png':
+elif output.find('latin') == 0:
 	clist = ['Mexico','Brazil','Chile','Argentina','Columbia','Peru','Bolivia','Ecuador','Cuba','Panama','Nicaragua','Uruguay','Guatemala','Belize','Jamaica']
-elif output == 'africa.png' or output == 'africa_linear.png':
+elif output.find('africa') == 0:
 	clist = ['Qatar','Saudi Arabia','Egypt','South Africa','Israel','Bahrain','Algeria','United Arab Emirates','Morocco','Jordan','Lebanon','Kenya','Ethiopia']
-elif output == 'global.png' or output == 'global_linear.png':
+elif output.find('global') == 0:
 	clist = ['Earth','EU','China','N. America','Middle East','ROE']
 
 # if the 2nd command line argument is 'linear' or 'log', use that to set y-axis type
@@ -52,6 +52,14 @@ try:
 	type = args[2]
 except:
 	type = 'log'
+delta = False
+print(args)
+try:
+	if args[4] == 'delta':
+		delta = True
+	print('delta')
+except:
+	delta = False
 # select either confirmed cases or deaths for graph, from the 1st command line argument
 try:
 	if args[1] == 'deaths':
@@ -143,14 +151,17 @@ for l in lines:
 			country['Earth'][i] += int(t)
 		except:
 			pass
+dtitle = ytitle
+if delta:
+	dtitle = 'new ' + ytitle + '/day'
 
 mpl.style.use('seaborn-notebook')
 ax = plt.gca()
 plt.yscale(type)
-plt.ylabel('%s (%s)' % (ytitle,type))
+plt.ylabel('%s (%s)' % (dtitle,type))
 #set titles based on the csv used
 xtitle = 'days after 10th death'
-if ytitle == 'confirmed cases':
+if ytitle.find('confirmed cases') == 0:
 	xtitle = 'days after 100th case'
 plt.xlabel(xtitle)
 now = datetime.datetime.now()
@@ -191,18 +202,45 @@ for c,v in sorted(country.items(),key=lambda value: value[1][-1],reverse = True)
 	px = [xv[-1],xv[-1]+1]
 	dy = 1.0 + float(yv[-1]-yv[-2])/float(yv[-1])
 	py = [yv[-1],yv[-1]*dy]
+	if delta:
+		dv = []
+		for i,y in enumerate(yv):
+			if i == 0:
+				dv.append(0)
+			else:
+				dv.append(yv[i]-yv[i-1])
+		av = []
+		for i,y in enumerate(dv):
+			if i < 2:
+				av.append((dv[i]+dv[i+1]+dv[i+2])/3.0)
+			else:
+				av.append((dv[i]+dv[i-1]+dv[i-2])/3.0)
+			
+		yv = av
 	if output.find('global') == 0:
-		plt.plot(xv,yv,marker='.',label='%s' % (cl))
+		if delta:
+			plt.text(xv[-1]+.2,yv[-1],cl)
+			plt.plot(xv,yv,marker='.',label='%s' % (cl))
+		else:
+			plt.text(px[-1]+.2,py[-1],cl)
+			plt.plot(xv,yv,marker='.',label='%s' % (cl))
+			plt.plot(px,py,marker='x',linestyle=':',alpha=1,color='#999999')
+	
 	else:
-		plt.plot(xv,yv,marker='o',label='%s' % (cl))
-	plt.text(px[-1]+.2,py[-1],cl)
-	plt.plot(px,py,marker='x',linestyle=':',alpha=1,color='#999999')
-#show the graph
+		if delta:
+			plt.text(xv[-1]+.2,yv[-1],cl)
+			plt.plot(xv,yv,marker='o',label='%s' % (cl))
+		else:
+			plt.text(px[-1]+.2,py[-1],cl)
+			plt.plot(xv,yv,marker='o',label='%s' % (cl))
+			plt.plot(px,py,marker='x',linestyle=':',alpha=1,color='#999999')
 
-plot_model(plt,max,10,'#55ff55',ytitle)
-plot_model(plt,max,20,'#aaddaa',ytitle)
-plot_model(plt,max,30,'#aaaaaa',ytitle)
-plot_model(plt,max,50,'#ffaaaa',ytitle)
+	#show the graph
+if not delta:
+	plot_model(plt,max,10,'#55ff55',ytitle)
+	plot_model(plt,max,20,'#aaddaa',ytitle)
+	plot_model(plt,max,30,'#aaaaaa',ytitle)
+	plot_model(plt,max,50,'#ffaaaa',ytitle)
 
 plt.legend(loc='best')
 plt.grid(True, lw = 1, ls = ':', c = '.8')
