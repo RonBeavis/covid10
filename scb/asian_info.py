@@ -9,47 +9,54 @@ import matplotlib as mpl
 import datetime
 import csv
 
-def plot_model(_plt,_max,_per,_color,_yt):
+params = {'delta': False}
+
+def plot_model(_plt,_max,_per,_color):
 	xv = []
 	yv = []
-	y = 100
-	if _yt == 'fatalities':
-		y = 10
+	y = params['limit']
 	for x in range(0,max):
 		xv.append(x)
 		yv.append(y)
 		y = y * (1.0 + _per/100.0)
 		if y > ymax:
 			break
-	_plt.plot(xv,yv,marker='x',linestyle='--',alpha=0.8,color=_color,label='+%i%% /day' % (_per))
-	_plt.text(len(xv)-1+.2,yv[-1],'%i%%' % (_per),color=_color)
+	if len(yv) > 1:
+		_plt.plot(xv,yv,marker='x',linestyle='--',alpha=0.8,color=_color,label='+%i%% /day' % (_per))
+		_plt.text(len(xv)-1+.2,yv[-1],'%i%%' % (_per),color=_color)
 
-args = sys.argv;
-path = 'covid-19_confirmed.csv'
-ytitle = 'confirmed cases'
-type = 'log'
-output = args[3]
+#process input parameters
+if len(sys.argv) < 3:
+	print('usage: python country_info.py -l(min value) -o(out file) -t(linear/log) -d(delta) -c(deaths/confirmed)')
+	exit()
+for l in sys.argv[1:]:
+	if l.find('-o') == 0:
+		params['output'] = l[2:]
+	elif l.find('-t') == 0:
+		params['type'] = l[2:]
+	elif l.find('-l') == 0:
+		params['limit'] = int(l[2:])
+	elif l.find('-d') == 0:
+		params['delta'] = True
+	elif l.find('-c') == 0:
+		params['consequences'] = l[2:]
+	else:
+		print('Unknown parameter %s' % (l))
+		exit()
+print(params)
+
+if params['consequences'] == 'deaths':
+		path = 'covid-19_deaths.csv'
+		ytitle = 'fatalities'
+else:
+		path = 'covid-19_confirmed.csv'
+		ytitle = 'confirmed cases'
+delta = params['delta']
+type = params['type']
+output = params['output']
 # specify list of countries to track
 clist = ['Indonesia','Thailand','Philippines','Taiwan*','China','Japan','Korea, South','Singapore','India','Pakistan','Iran','Malaysia']
 clabels = {'Korea, South':'S. Korea','Taiwan*':'Taiwan'}
-# if the 2nd command line argument is 'linear' or 'log', use that to set y-axis type
-try:
-	type = args[2]
-except:
-	type = 'log'
-# select either confirmed cases or deaths for graph, from the 1st command line argument
-try:
-	if args[1] == 'deaths':
-		path = 'covid-19_deaths.csv'
-		ytitle = 'fatalities'
-		args.pop(1)
-	elif args[1] == 'confirmed':
-		path = 'covid-19_confirmed.csv'
-		ytitle = 'confirmed cases'
-		args.pop(1)
-except:
-	path = 'covid-19_confirmed.csv'
-	ytitle = 'confirmed cases'
 
 lines = []
 # read the csv file into a list of lists
@@ -84,8 +91,10 @@ plt.yscale(type)
 plt.ylabel('%s (%s)' % (ytitle,type))
 #set titles based on the csv used
 xtitle = 'days after 10th death'
-if ytitle == 'confirmed cases':
-	xtitle = 'days after 100th case'
+if params['consequences'] == 'deaths':
+	xtitle = 'days after %ith death' % (params['limit'])
+else:
+	xtitle = 'days after %ith case' % (params['limit'])
 plt.xlabel(xtitle)
 now = datetime.datetime.now()
 tm = '%s UTC' % (xs[-1].strftime("%Y-%m-%d"))
@@ -97,9 +106,7 @@ ymax = 0
 for c,v in sorted(country.items(),key=lambda value: value[1][-1],reverse = True):
 	if c not in clist:
 		continue
-	min = 10
-	if ytitle == 'confirmed cases':
-		min = 100
+	min = params['limit']
 	xv = []
 	yv = []
 	dyv = []
@@ -143,10 +150,11 @@ for c,v in sorted(country.items(),key=lambda value: value[1][-1],reverse = True)
 	
 #show the graph
 
-plot_model(plt,max,10,'#55ff55',ytitle)
-plot_model(plt,max,20,'#aaddaa',ytitle)
-plot_model(plt,max,30,'#aaaaaa',ytitle)
-plot_model(plt,max,50,'#ffaaaa',ytitle)
+if not delta:
+	plot_model(plt,max,10,'#55ff55')
+	plot_model(plt,max,20,'#aaddaa')
+	plot_model(plt,max,30,'#aaaaaa')
+	plot_model(plt,max,50,'#ffaaaa')
 
 plt.grid(True, lw = 1, ls = ':', c = '.8')
 plt.legend(loc='best')
